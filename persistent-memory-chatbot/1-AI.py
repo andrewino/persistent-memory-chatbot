@@ -26,7 +26,7 @@ while True:
     
     history.append({"role": "user", "content": user_input})
     
-    profilo = open("profilo.json", encoding="utf-8").read()
+    profilo = open("profile.json", encoding="utf-8").read()
 
     response = ollama.chat(
     model="gemma3:4b",
@@ -43,4 +43,4 @@ while True:
     
     print(f"AI: {reply}\n")
     save_history()
-    subprocess.run(["python3", "secondaAI.py"])
+    subprocess.run(["python3", "2-AI.py"])
