@@ -1,0 +1,17 @@
+Leggi il JSON qui sotto che contiene una cronologia di conversazioni.
+Estrai tutte le informazioni sull'utente e costruisci un profilo dettagliato.
+
+Regole:
+- Genera TU le categorie più adatte in base a ciò che trovi nel JSON
+- Usa almeno 8 categorie
+- Ogni categoria deve avere almeno un valore
+- Non aggiungere commenti, introduzioni o spiegazioni
+- Non analizzare la conversazione, estrai solo fatti sull'utente
+- Inizia direttamente con il profilo, senza preamboli
+- Scrivi in italiano
+
+Formato:
+[Nome categoria]:
+[valore]
+
+JSON:
