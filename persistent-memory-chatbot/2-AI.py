@@ -5,7 +5,7 @@ import json
 history = []
 
 def save_history():
-    with open("profilo.json", "w") as f:
+    with open("profile.json", "w") as f:
         json.dump(reply, f)
 
 def load_history():
