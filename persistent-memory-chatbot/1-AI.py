@@ -3,6 +3,11 @@ import json
 import subprocess
 import os
 
+color_reset = "\033[0m"
+color_user = "\033[94m"
+color_ai = "\033[92m"
+color_red = "\033[91m"
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 history = []
@@ -23,9 +28,14 @@ def load_history():
 load_history()
 
 while True:
-    user_input = input("Tu: ")
+    print(f"{color_red}type '/exit' to exit.{color_reset}")
+    print(f"{color_red}type '/clear' to clear chat history and exit.{color_reset}")
+    user_input = input(f"{color_user}Tu: {color_reset}")
 
-    if user_input.lower() == "esci":
+    if user_input.lower() == "/exit":
+        break
+    elif user_input.lower() == "/clear":
+        open(os.path.join(BASE_DIR, "chat_history.json"), "w").write("[]")
         break
 
     history.append({"role": "user", "content": user_input})
@@ -49,7 +59,7 @@ while True:
     reply = response.message.content
     history.append({"role": "assistant", "content": reply})
 
-    print(f"AI: {reply}\n")
+    print(f"{color_ai}AI: {reply}{color_reset}\n")
     save_history()
 
     if analyzer_process is None or analyzer_process.poll() is not None:
