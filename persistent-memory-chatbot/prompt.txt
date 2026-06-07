@@ -1,17 +1,22 @@
-Leggi il JSON qui sotto che contiene una cronologia di conversazioni.
-Estrai tutte le informazioni sull'utente e costruisci un profilo dettagliato.
+Ah ok, perfetto! Ha tutto il senso allora — un sistema che legge le conversazioni passate e costruisce un profilo aggiornato per dare contesto all'AI ad ogni nuova sessione. È un approccio molto efficace per la memoria persistente.
+In quel caso il prompt è già buono, ma possiamo migliorarlo per questo scopo specifico:
 
+Leggi il JSON qui sotto che contiene una cronologia di conversazioni tra un utente e un'AI.
+Estrai tutte le informazioni sull'utente e costruisci un profilo di memoria persistente aggiornato.
+Scopo: Questo profilo verrà iniettato come contesto in future sessioni AI affinché l'assistente ricordi chi è l'utente, le sue preferenze, abitudini e storia.
 Regole:
-- Genera TU le categorie più adatte in base a ciò che trovi nel JSON
-- Usa almeno 8 categorie
-- Ogni categoria deve avere almeno un valore
-- Non aggiungere commenti, introduzioni o spiegazioni
-- Non analizzare la conversazione, estrai solo fatti sull'utente
-- Inizia direttamente con il profilo, senza preamboli
-- Scrivi in italiano
 
-Formato:
-[Nome categoria]:
-[valore]
+Genera TU le sezioni e categorie più adatte in base a ciò che trovi
+Basati ESCLUSIVAMENTE su ciò che l'utente ha scritto, mai inferire o inventare
+Ogni categoria deve avere un valore reale trovato nella conversazione
+Non aggiungere categorie vuote o con valore "non specificato"
+Aggiorna e sovrascrivi dati già presenti se trovi versioni più recenti
+Dai priorità a: preferenze, abitudini, obiettivi, contesto personale
+Scrivi in italiano, inizia direttamente con il JSON
 
-JSON:
+Formato output:
+json{
+  "NOME_SEZIONE": {
+    "nome_categoria": "valore"
+  }
+}
