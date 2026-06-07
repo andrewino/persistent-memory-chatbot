@@ -6,6 +6,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 history = []
+analyzer_process = None
 
 def save_history():
     with open(os.path.join(BASE_DIR, "chat_history.json"), "w") as f:
@@ -30,7 +31,8 @@ while True:
     history.append({"role": "user", "content": user_input})
 
     try:
-        profilo = open(os.path.join(BASE_DIR, "profile.json"), encoding="utf-8").read()
+        with open(os.path.join(BASE_DIR, "profile.json"), encoding="utf-8") as f:
+            profilo = f.read()
     except FileNotFoundError:
         profilo = ""
 
@@ -49,4 +51,6 @@ while True:
 
     print(f"AI: {reply}\n")
     save_history()
-    subprocess.Popen(["python3", os.path.join(BASE_DIR, "2-AI.py")])
+
+    if analyzer_process is None or analyzer_process.poll() is not None:
+        analyzer_process = subprocess.Popen(["python3", os.path.join(BASE_DIR, "2-AI.py")])
