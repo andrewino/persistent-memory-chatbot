@@ -1,5 +1,3 @@
-Ah ok, perfetto! Ha tutto il senso allora — un sistema che legge le conversazioni passate e costruisce un profilo aggiornato per dare contesto all'AI ad ogni nuova sessione. È un approccio molto efficace per la memoria persistente.
-In quel caso il prompt è già buono, ma possiamo migliorarlo per questo scopo specifico:
 
 Leggi il JSON qui sotto che contiene una cronologia di conversazioni tra un utente e un'AI.
 Estrai tutte le informazioni sull'utente e costruisci un profilo di memoria persistente aggiornato.
