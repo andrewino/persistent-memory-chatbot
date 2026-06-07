@@ -49,4 +49,4 @@ while True:
 
     print(f"AI: {reply}\n")
     save_history()
-    subprocess.run(["python3", os.path.join(BASE_DIR, "2-AI.py")])
+    subprocess.Popen(["python3", os.path.join(BASE_DIR, "2-AI.py")])
