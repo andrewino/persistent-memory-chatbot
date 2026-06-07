@@ -1,17 +1,19 @@
-
 import ollama
 import json
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 history = []
 
-def save_history():
-    with open("profile.json", "w") as f:
-        json.dump(reply, f)
+def save_profile():
+    with open(os.path.join(BASE_DIR, "profile.json"), "w", encoding="utf-8") as f:
+        f.write(reply)
 
 def load_history():
     global history
     try:
-        with open("chat_history.json", "r") as f:
+        with open(os.path.join(BASE_DIR, "chat_history.json"), "r") as f:
             history = json.load(f)
     except FileNotFoundError:
         history = []
@@ -20,18 +22,15 @@ load_history()
 
 def main():
     global reply
-    stringa = open("prompt.txt", encoding="utf-8").read()
-    
-    # Combina il prompt con la historyå
+    stringa = open(os.path.join(BASE_DIR, "prompt.txt"), encoding="utf-8").read()
     messaggio = stringa + "\n\n" + json.dumps(history, ensure_ascii=False)
-    
+
     response = ollama.chat(
         model="gemma3:4b",
         messages=[{"role": "user", "content": messaggio}]
     )
-    
+
     reply = response.message.content
-    
-    save_history()
+    save_profile()
 
 main()
