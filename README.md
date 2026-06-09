@@ -1,4 +1,3 @@
-
 # 🧠 Persistent Memory Chatbot (Multi-Agent RAG)
 
 Un sistema avanzato di chatbot locale con memoria persistente. Il progetto utilizza un'architettura multi-agente basata su Ollama, dove diverse istanze di intelligenza artificiale lavorano in modo asincrono per estrarre, filtrare e ottimizzare il profilo dell'utente nel tempo.
@@ -26,22 +25,22 @@ Utente scrive → 1-AI risponde → Salva chat → Lancia 2-AI (in background) �
 
 🚀 Installazione
 
-1. Installa Ollama Scaricalo da ollama.com e installalo sul tuo sistema.
+1.  Installa Ollama: Scaricalo da ollama.com e installalo sul tuo sistema.
 
-2. Scarica i modelli AI Il progetto usa due versioni di Gemma 3 per bilanciare
-velocità e capacità di ragionamento:
+2.  Scarica i modelli AI: Il progetto usa due versioni di Gemma 3 per bilanciare
+    velocità e capacità di ragionamento:
 
-ollama pull gemma3:4b
-ollama pull gemma3:12b
+    ollama pull gemma3:4b
+    ollama pull gemma3:12b
 
-3. Installa le dipendenze Python
+3.  Installa le dipendenze Python:
 
-pip install ollama
+    pip install ollama
 
-4. Clona il repository
+4.  Clona il repository:
 
-git clone https://github.com/andrewino/persistent-memory-chatbot.git
-cd persistent-memory-chatbot
+    git clone https://github.com/andrewino/persistent-memory-chatbot.git
+    cd persistent-memory-chatbot
 
 🎮 Utilizzo
 
@@ -72,3 +71,4 @@ Comandi speciali nella chat:
 👨‍💻 Autore
 
 Sviluppato da andrewino😎😎😎
+
