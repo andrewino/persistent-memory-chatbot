@@ -1,5 +1,9 @@
 # 🧠 Persistent Memory Chatbot (Multi-Agent RAG)
 
+> [!IMPORTANT]
+> Start the project by running **`MAIN-AI.py`**.
+
+
 An advanced local chatbot with persistent memory. The project uses a multi-agent architecture powered by Ollama, where multiple AI instances work asynchronously to extract, filter, and categorize the user's profile into dedicated memory compartments.
 
 ---
