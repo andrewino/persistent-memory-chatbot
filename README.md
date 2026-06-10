@@ -8,7 +8,7 @@ Un sistema avanzato di chatbot locale con memoria persistente. Il progetto utili
 
 Il progetto elabora la memoria in background attraverso un sistema di agenti specializzati che evitano la confusione dei dati:
 
-1. **`1-AI.py` (L'Interfaccia Chat)** — Gestisce l'interazione con l'utente usando un modello veloce (`gemma3:4b`). Legge il profilo globale per personalizzare le risposte e salva la cronologia.
+1. **`MAIN-AI.py` (L'Interfaccia Chat)** — Gestisce l'interazione con l'utente usando un modello veloce (`gemma3:4b`). Legge il profilo globale per personalizzare le risposte e salva la cronologia.
 2. **Agenti Specializzati (Background)** — Girano in parallelo tramite `threading` senza bloccare la chat. Usano il modello `gemma3:12b` (o `4b` a scelta) per analizzare la cronologia in base a compiti specifici:
    - **`Identity-AI.py`**: Gestisce dati anagrafici e identità.
    - **`Knowledge-AI.py`**: Gestisce competenze tecniche e conoscenze.
@@ -18,7 +18,7 @@ Il progetto elabora la memoria in background attraverso un sistema di agenti spe
 
 **Flusso dei dati:**
 ```text
-Utente scrive → 1-AI risponde → Salva chat → Threading asincrono → Agenti (Identity, Knowledge, Personal, Context) → categorie.py → Aggiorna profile.json
+Utente scrive → MAIN-AI risponde → Salva chat → Threading asincrono → Agenti (Identity, Knowledge, Personal, Context) → categorie.py → Aggiorna profile.json
 ```
 
 ## 💻 Requisiti
@@ -54,7 +54,7 @@ Utente scrive → 1-AI risponde → Salva chat → Threading asincrono → Agent
 Avvia il chatbot eseguendo il file principale:
 
 ```bash
-python3 1-AI.py
+python3 MAIN-AI.py
 ```
 
 **Comandi speciali nella chat:**
@@ -65,7 +65,7 @@ python3 1-AI.py
 
 | File                | Descrizione                                                         |
 | ------------------- | ------------------------------------------------------------------- |
-| `1-AI.py`           | Chatbot principale e gestione Threading.                            |
+| `MAIN-AI.py`           | Chatbot principale e gestione Threading.                            |
 | `Identity-AI.py`    | Agente specializzato in identità e anagrafica.                      |
 | `Knowledge-AI.py`   | Agente specializzato in competenze e strumenti.                     |
 | `Personal-AI.py`    | Agente specializzato in preferenze e interessi personali.           |
