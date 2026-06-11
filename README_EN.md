@@ -1,86 +1,88 @@
+
 # 🧠 Persistent Memory Chatbot (Multi-Agent RAG)
 
 > [!IMPORTANT]
 > Start the project by running **`MAIN-AI.py`**.
 
-
-An advanced local chatbot with persistent memory. The project uses a multi-agent architecture powered by Ollama, where multiple AI instances work asynchronously to extract, filter, and categorize the user's profile into dedicated memory compartments.
+An advanced local chatbot system with persistent long-term memory. This project utilizes a multi-agent architecture powered by Ollama, featuring a **Smart Routing** system for efficient and high-performance memory updates.
 
 ---
 
 ## ⚙️ How the Architecture Works
 
-The project processes memory in the background through a system of specialized agents, preventing data from becoming mixed or cluttered.
+The project is optimized for speed and efficiency on consumer hardware through intelligent process management:
 
-1. **`MAIN-AI.py` (Chat Interface)** — Handles user interactions using a fast model (`gemma3:4b`). It reads the global user profile to personalize responses and saves the conversation history.
-2. **Specialized Agents (Background)** — Run in parallel using `threading` without blocking the chat. They use the `gemma3:12b` model (or optionally `4b`) to analyze the conversation history according to specific tasks:
-   - **`Identity-AI.py`**: Manages identity and personal information.
-   - **`Knowledge-AI.py`**: Manages technical skills and knowledge.
-   - **`Personal-AI.py`**: Manages hobbies, interests, and personal preferences.
-   - **`Context-AI.py`**: Manages ongoing projects and temporary situations.
-3. **`categorie.py` (Aggregator)** — Collects the output from all agents and merges it into a single structured `profile.json` file.
+1. **`MAIN-AI.py` (Chat Interface)** — Handles **streaming** user interaction using `gemma3:4b`. It employs **Memory Slicing** (reading only the last 10 messages) to maintain high performance even during long conversations.
+2. **Smart Router (Intelligence Filter)** — Before activating heavy background agents, the chatbot uses the 4b model to analyze if the last message contains information worth remembering. If no new info is detected, it skips the update, saving 90% of CPU/VRAM resources.
+3. **Specialized Agents (`AI-profile/`)** — If the router identifies a relevant category, it triggers the specific agent in the background (using `gemma3:12b` for maximum extraction precision):
+   - **`Identity-AI.py`**: Personal data and demographics.
+   - **`Knowledge-AI.py`**: Technical and professional skills.
+   - **`Personal-AI.py`**: Hobbies, tastes, and preferences.
+   - **`Context-AI.py`**: Current projects, deadlines, and relationships.
+4. **`categorie.py`** — Synchronizes local databases and merges everything into the global `profile.json` file.
 
 **Data Flow:**
 ```text
-User sends a message → MAIN-AI responds → Saves chat history → Asynchronous threading → Agents (Identity, Knowledge, Personal, Context) → categorie.py → Updates profile.json
+User writes → AI Response (Streaming) → Smart Router (Background) 
+   ↳ If info is relevant → Run Specific Agent → categorie.py → Update profile.json
+   ↳ If info is irrelevant → End process (CPU/VRAM Savings)
 ```
+
+---
+
+## 📁 Project Structure
+
+The project is now modularly organized:
+
+```text
+📂 persistent-memory-chatbot/
+├── 📂 AI-profile/          # Memory "workers" (Identity, Knowledge, etc.)
+├── 📂 data/                # JSON Databases (History and Profiles)
+├── 📂 prompts/             # System instructions (prompt-*.txt)
+├── MAIN-AI.py              # Main Chat Script
+├── categorie.py            # Memory Aggregator
+├── Test.py                 # Test environment with auto backup/restore
+└── README.md
+```
+
+---
 
 ## 💻 Requirements
 
-- Python 3
-- Ollama installed and running
-- `gemma3:4b` and `gemma3:12b` models downloaded locally
-- Python `ollama` library
+- Python 3.x
+- [Ollama](https://ollama.com) installed and running
+- Models: `ollama pull gemma3:4b` and `ollama pull gemma3:12b`
+- Python Library: `pip install ollama`
 
-## 🚀 Installation
-
-1. **Install Ollama:** Download it from https://ollama.com and install it on your system.
-
-2. **Download the AI models:**
-   ```bash
-   ollama pull gemma3:4b
-   ollama pull gemma3:12b
-   ```
-
-3. **Install the Python dependency:**
-   ```bash
-   pip install ollama
-   ```
-
-4. **Clone the repository:**
-   ```bash
-   git clone https://github.com/andrewino/persistent-memory-chatbot.git
-   cd persistent-memory-chatbot
-   ```
+---
 
 ## 🎮 Usage
 
-Start the chatbot by running the main file:
-
+Start the chatbot:
 ```bash
 python3 MAIN-AI.py
 ```
 
-**Special chat commands:**
-- `/exit` : Closes the chat and saves the current state.
-- `/clear` : Clears the conversation history and exits.
+**Special Commands:**
+- `/exit` : Closes the chat.
+- `/clear` : Clears history and resets the current session.
 
-## 📁 Project Files
-
-| File | Description |
-|------|-------------|
-| `MAIN-AI.py` | Main chatbot and threading management. |
-| `Identity-AI.py` | Specialized agent for identity and personal information. |
-| `Knowledge-AI.py` | Specialized agent for technical skills and knowledge. |
-| `Personal-AI.py` | Specialized agent for personal preferences and interests. |
-| `Context-AI.py` | Specialized agent for ongoing projects and current context. |
-| `categorie.py` | Merges all agent JSON files into the global user profile. |
-| `prompt-*.txt` | Agent-specific instructions for memory extraction. |
-| `chat_history.json` | Complete conversation history. |
-| `profile.json` | The structured and cleaned persistent user memory database. |
+### 🛠 Test Mode
+If you want to test the bot without modifying your real memory files, use:
+```bash
+python3 Test.py
+```
+*This script automatically backs up your data, starts the chat, and restores everything to its original state upon exit.*
 
 ---
 
 ## 👨‍💻 Author
+Developed by **andrewino** 😎
 
-Developed by **andrewino** 😎😎😎
+---
+
+### Latest Updates:
+- ✅ **Directory Organization**: Data, prompts, and scripts are now separated.
+- ✅ **Smart Router**: Updates memory only when truly necessary.
+- ✅ **Streaming**: AI responses are visible in real-time.
+- ✅ **Memory Slicing**: Prevents chat slowdowns regardless of conversation length.
