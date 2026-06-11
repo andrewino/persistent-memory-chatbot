@@ -1,86 +1,89 @@
+
+
 # 🧠 Persistent Memory Chatbot (Multi-Agent RAG)
 
 > [!IMPORTANT]
-> Start the project by running **`MAIN-AI.py`**.
+> Avvia il progetto eseguendo **`MAIN-AI.py`**.
 
-
-Un sistema avanzato di chatbot locale con memoria persistente. Il progetto utilizza un'architettura multi-agente basata su Ollama, dove diverse istanze di intelligenza artificiale lavorano in modo asincrono per estrarre, filtrare e categorizzare il profilo dell'utente in compartimenti specifici.
+Un sistema avanzato di chatbot locale con memoria persistente. Il progetto utilizza un'architettura multi-agente basata su Ollama, con un sistema di **Smart Routing** per un aggiornamento della memoria efficiente e veloce.
 
 ---
 
 ## ⚙️ Come funziona l'Architettura
 
-Il progetto elabora la memoria in background attraverso un sistema di agenti specializzati che evitano la confusione dei dati:
+Il progetto è stato ottimizzato per essere veloce anche su hardware consumer, grazie a una gestione intelligente dei processi:
 
-1. **`MAIN-AI.py` (L'Interfaccia Chat)** — Gestisce l'interazione con l'utente usando un modello veloce (`gemma3:4b`). Legge il profilo globale per personalizzare le risposte e salva la cronologia.
-2. **Agenti Specializzati (Background)** — Girano in parallelo tramite `threading` senza bloccare la chat. Usano il modello `gemma3:12b` (o `4b` a scelta) per analizzare la cronologia in base a compiti specifici:
-   - **`Identity-AI.py`**: Gestisce dati anagrafici e identità.
-   - **`Knowledge-AI.py`**: Gestisce competenze tecniche e conoscenze.
-   - **`Personal-AI.py`**: Gestisce hobby, gusti e preferenze.
-   - **`Context-AI.py`**: Gestisce progetti in corso e situazioni temporanee.
-3. **`categorie.py` (L'Aggregatore)** — Raccoglie i risultati di tutti gli agenti e li unisce in un unico file `profile.json` strutturato.
+1. **`MAIN-AI.py` (L'Interfaccia Chat)** — Gestisce l'interazione in **streaming** con l'utente usando `gemma3:4b`. Utilizza lo **Slicing della memoria** (legge solo gli ultimi 10 messaggi) per rimanere veloce anche dopo lunghe conversazioni.
+2. **Smart Router (Filtro Intelligente)** — Prima di attivare gli agenti pesanti, il chatbot usa il modello 4b per analizzare se l'ultimo messaggio contiene informazioni da ricordare. Se non ci sono novità, non attiva nulla, risparmiando il 90% delle risorse.
+3. **Agenti Specializzati (`AI-profile/`)** — Se il router identifica una categoria, attiva in background solo l'agente necessario (usando `gemma3:12b` per la massima precisione):
+   - **`Identity-AI.py`**: Identità e dati anagrafici.
+   - **`Knowledge-AI.py`**: Competenze tecniche e professionali.
+   - **`Personal-AI.py`**: Hobby, gusti e preferenze.
+   - **`Context-AI.py`**: Progetti attuali, scadenze e relazioni.
+4. **`categorie.py`** — Sincronizza i database locali e unisce tutto nel file globale `profile.json`.
 
 **Flusso dei dati:**
 ```text
-Utente scrive → MAIN-AI risponde → Salva chat → Threading asincrono → Agenti (Identity, Knowledge, Personal, Context) → categorie.py → Aggiorna profile.json
+Utente scrive → Risposta AI (Streaming) → Smart Router (Background) 
+   ↳ Se info rilevante → Esegue Agente Specifico → categorie.py → Update profile.json
+   ↳ Se info irrilevante → Fine processo (Risparmio CPU/VRAM)
 ```
+
+---
+
+## 📁 Struttura del Progetto
+
+Il progetto è ora organizzato in modo modulare:
+
+```text
+📂 persistent-memory-chatbot/
+├── 📂 AI-profile/          # Gli "operai" della memoria (Identity, Knowledge, ecc.)
+├── 📂 data/                # Database JSON (Cronologia e Profili)
+├── 📂 prompts/             # Istruzioni di sistema (prompt-*.txt)
+├── MAIN-AI.py              # Script principale della Chat
+├── categorie.py            # Aggregatore della memoria
+├── Test.py                 # Ambiente di test con backup/ripristino automatico
+└── README.md
+```
+
+---
 
 ## 💻 Requisiti
 
-- Python 3
-- Ollama installato e in esecuzione
-- Modelli `gemma3:4b` e `gemma3:12b` scaricati localmente
-- Libreria Python `ollama`
+- Python 3.x
+- [Ollama](https://ollama.com) installato
+- Modelli: `ollama pull gemma3:4b` e `ollama pull gemma3:12b`
+- Libreria Python: `pip install ollama`
 
-## 🚀 Installazione
-
-1. **Installa Ollama:** Scaricalo da [ollama.com](https://ollama.com) e installalo sul tuo sistema.
-
-2. **Scarica i modelli AI:** 
-   ```bash
-   ollama pull gemma3:4b
-   ollama pull gemma3:12b
-   ```
-
-3. **Installa le dipendenze Python:**
-   ```bash
-   pip install ollama
-   ```
-
-4. **Clona il repository:**
-   ```bash
-   git clone https://github.com/andrewino/persistent-memory-chatbot.git
-   cd persistent-memory-chatbot
-   ```
+---
 
 ## 🎮 Utilizzo
 
-Avvia il chatbot eseguendo il file principale:
-
+Avvia il chatbot:
 ```bash
 python3 MAIN-AI.py
 ```
 
-**Comandi speciali nella chat:**
-- `/exit` : Chiude la chat e salva lo stato.
-- `/clear` : Svuota la cronologia della conversazione ed esce.
+**Comandi speciali:**
+- `/exit` : Chiude la chat.
+- `/clear` : Svuota la cronologia e resetta la sessione attuale.
 
-## 📁 File del progetto
-
-| File                | Descrizione                                                         |
-| ------------------- | ------------------------------------------------------------------- |
-| `MAIN-AI.py`           | Chatbot principale e gestione Threading.                            |
-| `Identity-AI.py`    | Agente specializzato in identità e anagrafica.                      |
-| `Knowledge-AI.py`   | Agente specializzato in competenze e strumenti.                     |
-| `Personal-AI.py`    | Agente specializzato in preferenze e interessi personali.           |
-| `Context-AI.py`     | Agente specializzato in progetti e situazioni attuali.              |
-| `categorie.py`      | Unisce i JSON dei singoli agenti nel profilo globale.               |
-| `prompt-*.txt`      | Istruzioni specifiche per ogni agente di memoria.                   |
-| `chat_history.json` | Cronologia completa dei messaggi.                                   |
-| `profile.json`      | Il database della memoria dell'utente strutturato e pulito.         |
+### 🛠 Modalità Test
+Se vuoi testare il bot senza sporcare i tuoi file di memoria reali, usa:
+```bash
+python3 Test.py
+```
+*Questo script crea un backup automatico dei tuoi dati, avvia la chat e ripristina tutto allo stato originale alla chiusura.*
 
 ---
 
-## 👨+💻 Autore
+## 👨‍💻 Autore
+Sviluppato da **andrewino** 😎
 
-Sviluppato da **andrewino**😎😎😎
+---
+
+### Novità dell'ultima versione:
+- ✅ **Organizzazione in cartelle**: Dati, prompt e script ora sono separati.
+- ✅ **Smart Router**: Aggiorna la memoria solo quando serve veramente.
+- ✅ **Streaming**: Risposte dell'AI visibili in tempo reale.
+- ✅ **Memory Slicing**: La chat non rallenta più all'aumentare dei messaggi.
