@@ -88,7 +88,13 @@ load_history()
 print(f"{color_red}type '/exit' to exit.{color_reset}")
 print(f"{color_red}type '/clear' to clear chat history and exit.{color_reset}")
 
+memory_thread = None
+
 while True:
+    if memory_thread is not None:
+        memory_thread.join()
+        memory_thread = None
+
     user_input = input(f"{color_user}Tu: {color_reset}")
 
     if user_input.lower() == "/exit":
@@ -131,4 +137,5 @@ while True:
     history.append({"role": "assistant", "content": reply})
     save_history()
 
-    threading.Thread(target=smart_memory_update, args=(user_input,), daemon=True).start()
+    memory_thread = threading.Thread(target=smart_memory_update, args=(user_input,), daemon=True)
+    memory_thread.start()
